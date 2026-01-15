@@ -3,7 +3,7 @@
 #include "absl/debugging/failure_signal_handler.h"
 #include "absl/debugging/symbolize.h"
 
-#include <CppStaticLib/CppStaticLib.hpp>
+#include <ExampleStaticLibB/ExampleStaticLibB.hpp>
 #include <cstdlib>
 
 TEST(FactorialFuzzTestSuite, factorial2) {

@@ -1,6 +1,6 @@
 #include <boost/ut.hpp>
 
-#include <CppStaticLib/CppStaticLib.hpp>
+#include <ExampleStaticLibB/ExampleStaticLibB.hpp>
 #include <string>
 #include <iostream>
 #include <cstdlib>
