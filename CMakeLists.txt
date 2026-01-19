@@ -31,12 +31,13 @@ endif()
 # see https://github.com/TheLartians/CPM.cmake for more info
 
 include(cmake/CPM.cmake)
-# CPMAddPackage("gh:MarkRakhmatov/ExampleStaticLibA#72a3bc405dbc7ec8c2bc52935e917c790f0de4fe")
+
+# CPMAddPackage("gh:MarkRakhmatov/ExampleStaticLibA#36a6656728f4893836cecf5d8aa874744de29465")
 include(FetchContent)
 FetchContent_Declare(
   ExampleStaticLibA
   GIT_REPOSITORY https://github.com/MarkRakhmatov/ExampleStaticLibA.git
-  GIT_TAG b2a87817c099d1b14b8af15f6dc16a6cd9f63ed3
+  GIT_TAG 36a6656728f4893836cecf5d8aa874744de29465
 )
 FetchContent_MakeAvailable(ExampleStaticLibA)
 
@@ -72,10 +73,21 @@ get_target_property(STATIC_DEPENDENCIES ${PROJECT_NAME} STATIC_DEPENDENCIES)
 
 # Link dependencies
 if(NOT "${STATIC_DEPENDENCIES}" STREQUAL "")
-  message(STATUS "Static dependencies: ${STATIC_DEPENDENCIES}")
+  message(STATUS "[${PROJECT_NAME}] Static dependencies: ${STATIC_DEPENDENCIES}")
   foreach(item ${STATIC_DEPENDENCIES})
-    message(STATUS "Linking static dependency ${item}")
+    message(STATUS "[${PROJECT_NAME}] Linking static dependency ${item}")
     target_link_libraries(${PROJECT_NAME} PRIVATE ${item}::${item})
+
+    get_target_property(TMP_TRANSITIVE_STATIC_DEPENDENCIES ${item} STATIC_DEPENDENCIES)
+    if(NOT "${TMP_TRANSITIVE_STATIC_DEPENDENCIES}" STREQUAL "")
+      foreach(transitive_depend ${TMP_TRANSITIVE_STATIC_DEPENDENCIES})
+        message(
+          STATUS "[${PROJECT_NAME}] Linking transitive static dependency ${transitive_depend}"
+        )
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${transitive_depend}::${transitive_depend})
+      endforeach()
+    endif()
+    list(APPEND TRANSITIVE_STATIC_DEPENDENCIES ${TMP_TRANSITIVE_STATIC_DEPENDENCIES})
   endforeach()
 endif()
 
@@ -151,8 +163,14 @@ include(GNUInstallDirs)
 
 set(INSTALL_TARGETS ${PROJECT_NAME})
 
-message(STATUS "Exporting transitive static dependencies: ${STATIC_DEPENDENCIES}")
+message(STATUS "[${PROJECT_NAME}] Exporting static dependencies: ${STATIC_DEPENDENCIES}")
 list(APPEND INSTALL_TARGETS ${STATIC_DEPENDENCIES})
+
+message(
+  STATUS
+    "[${PROJECT_NAME}] Exporting transitive static dependencies: ${TRANSITIVE_STATIC_DEPENDENCIES}"
+)
+list(APPEND INSTALL_TARGETS ${TRANSITIVE_STATIC_DEPENDENCIES})
 
 install(
   TARGETS ${INSTALL_TARGETS}
