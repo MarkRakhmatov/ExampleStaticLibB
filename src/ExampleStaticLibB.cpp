@@ -2,7 +2,7 @@
 #include "ExampleStaticLibB/ExampleStaticLibB.hpp"
 
 
-namespace csl {
+namespace libB {
 
   constexpr int g_maxIntFactorialInput = 12;
 

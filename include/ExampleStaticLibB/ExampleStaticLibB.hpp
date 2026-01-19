@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace csl {
+namespace libB {
   std::string getString();
 
   constexpr int factorialConstexpr(int input) noexcept {
@@ -15,4 +15,4 @@ namespace csl {
   int factorial(int input) noexcept;
 
   int uncoveredFunction(int value) noexcept;
-}  // namespace csl
+}  // namespace libB

@@ -32,6 +32,15 @@ endif()
 
 include(cmake/CPM.cmake)
 
+# CPMAddPackage("gh:MarkRakhmatov/ExampleStaticLibA#a47f8e68759acafe9674a573e6f67155c2155c6c")
+include(FetchContent)
+FetchContent_Declare(
+  ExampleStaticLibA
+  GIT_REPOSITORY https://github.com/MarkRakhmatov/ExampleStaticLibA.git
+  GIT_TAG a47f8e68759acafe9674a573e6f67155c2155c6c
+)
+FetchContent_MakeAvailable(ExampleStaticLibA)
+
 # ---- Add source files ----
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
@@ -60,7 +69,7 @@ if(NOT TEST_INSTALLED_VERSION)
 endif()
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE)
+target_link_libraries(${PROJECT_NAME} PRIVATE ExampleStaticLibA::ExampleStaticLibA)
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -132,7 +141,7 @@ string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
 
 include(GNUInstallDirs)
 
-set(INSTALL_TARGETS ${PROJECT_NAME})
+set(INSTALL_TARGETS ${PROJECT_NAME} ExampleStaticLibA)
 
 install(
   TARGETS ${INSTALL_TARGETS}
