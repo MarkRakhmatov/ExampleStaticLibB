@@ -36,7 +36,7 @@ include(FetchContent)
 FetchContent_Declare(
   ExampleStaticLibA
   GIT_REPOSITORY https://github.com/MarkRakhmatov/ExampleStaticLibA.git
-  GIT_TAG 7dd715f924e768cc06d996a8d85ec232461bc164
+  GIT_TAG b2a87817c099d1b14b8af15f6dc16a6cd9f63ed3
 )
 FetchContent_MakeAvailable(ExampleStaticLibA)
 
@@ -67,8 +67,17 @@ if(NOT TEST_INSTALLED_VERSION)
   endif()
 endif()
 
+set_target_properties(${PROJECT_NAME} PROPERTIES STATIC_DEPENDENCIES "ExampleStaticLibA")
+get_target_property(STATIC_DEPENDENCIES ${PROJECT_NAME} STATIC_DEPENDENCIES)
+
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE ExampleStaticLibA::ExampleStaticLibA)
+if(NOT "${STATIC_DEPENDENCIES}" STREQUAL "")
+  message(STATUS "Static dependencies: ${STATIC_DEPENDENCIES}")
+  foreach(item ${STATIC_DEPENDENCIES})
+    message(STATUS "Linking static dependency ${item}")
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${item}::${item})
+  endforeach()
+endif()
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -140,7 +149,10 @@ string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
 
 include(GNUInstallDirs)
 
-set(INSTALL_TARGETS ${PROJECT_NAME} ExampleStaticLibA)
+set(INSTALL_TARGETS ${PROJECT_NAME})
+
+message(STATUS "Exporting transitive static dependencies: ${STATIC_DEPENDENCIES}")
+list(APPEND INSTALL_TARGETS ${STATIC_DEPENDENCIES})
 
 install(
   TARGETS ${INSTALL_TARGETS}
