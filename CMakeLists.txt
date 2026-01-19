@@ -32,12 +32,12 @@ endif()
 
 include(cmake/CPM.cmake)
 
-# CPMAddPackage("gh:MarkRakhmatov/ExampleStaticLibA#36a6656728f4893836cecf5d8aa874744de29465")
+# CPMAddPackage("gh:MarkRakhmatov/ExampleStaticLibA#a47f8e68759acafe9674a573e6f67155c2155c6c")
 include(FetchContent)
 FetchContent_Declare(
   ExampleStaticLibA
   GIT_REPOSITORY https://github.com/MarkRakhmatov/ExampleStaticLibA.git
-  GIT_TAG 36a6656728f4893836cecf5d8aa874744de29465
+  GIT_TAG a47f8e68759acafe9674a573e6f67155c2155c6c
 )
 FetchContent_MakeAvailable(ExampleStaticLibA)
 
